@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers'
+import { headers } from 'next/headers'
 
 export type Role = 'admin' | 'staff' | 'customer'
 
@@ -11,20 +11,24 @@ export type CurrentUser = {
   role: Role
 }
 
-// Server-side session check used by the (app) layout.
-// The session now lives in Django: we forward the browser cookie to /api/auth/me.
+// Forward the RAW cookie header. cookies().toString() re-encodes the value
+// (":" becomes "%3A") and Django's signed-cookie session then fails to verify.
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   const base = (process.env.BACKEND_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
-  const cookieHeader = (await cookies()).toString()
+  const cookieHeader = (await headers()).get('cookie')
   if (!cookieHeader) return null
   try {
     const res = await fetch(`${base}/api/auth/me`, {
       headers: { cookie: cookieHeader },
       cache: 'no-store',
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      console.error('getCurrentUser: /api/auth/me returned', res.status)
+      return null
+    }
     return (await res.json()) as CurrentUser
-  } catch {
+  } catch (err) {
+    console.error('getCurrentUser: backend unreachable', err)
     return null
   }
 }
