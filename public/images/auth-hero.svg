@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06210f"/>
+      <stop offset=".45" stop-color="#0d4a2a"/>
+      <stop offset=".72" stop-color="#6f8f3a"/>
+      <stop offset="1" stop-color="#e3b25a"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".3" cy=".62" r=".5">
+      <stop offset="0" stop-color="#ffe9a8" stop-opacity=".95"/>
+      <stop offset=".35" stop-color="#ffd27a" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#ffd27a" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="rows" width="46" height="46" patternUnits="userSpaceOnUse" patternTransform="skewX(-28)">
+      <rect width="46" height="46" fill="none"/>
+      <rect x="0" width="5" height="46" fill="#0a2d16" opacity=".55"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#sun)"/>
+  <path d="M0 520 L180 400 L330 500 L520 360 L720 520 L900 420 L1100 540 L1300 410 L1600 540 L1600 900 L0 900Z" fill="#1d5a2f" opacity=".55"/>
+  <path d="M0 600 C260 520 460 580 700 560 C960 540 1220 600 1600 540 L1600 900 L0 900Z" fill="#14451f"/>
+  <path d="M0 690 C300 630 560 700 820 670 C1100 640 1320 700 1600 650 L1600 900 L0 900Z" fill="#0f3a1a"/>
+  <path d="M0 690 C300 630 560 700 820 670 C1100 640 1320 700 1600 650 L1600 900 L0 900Z" fill="url(#rows)"/>
+  <path d="M0 780 C340 740 640 800 960 770 C1220 748 1420 790 1600 760 L1600 900 L0 900Z" fill="#0a2d14"/>
+  <g fill="#51cc50" opacity=".5">
+    <ellipse cx="140" cy="840" rx="46" ry="18" transform="rotate(-20 140 840)"/>
+    <ellipse cx="260" cy="860" rx="52" ry="20" transform="rotate(15 260 860)"/>
+    <ellipse cx="520" cy="845" rx="48" ry="18" transform="rotate(-12 520 845)"/>
+    <ellipse cx="860" cy="858" rx="56" ry="20" transform="rotate(10 860 858)"/>
+    <ellipse cx="1180" cy="842" rx="50" ry="18" transform="rotate(-18 1180 842)"/>
+  </g>
+</svg>
