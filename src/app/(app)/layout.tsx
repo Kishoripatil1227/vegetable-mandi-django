@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/supabase/auth'
 import LogoutButton from '@/components/LogoutButton'
 import NavLinks, { NavGroup } from '@/components/NavLinks'
+import { LeafLogo } from '@/components/AuthShell'
 
 type L = { href: string; label: string; icon: string; roles: string[] }
 
@@ -64,16 +65,21 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen md:grid md:grid-cols-[248px_1fr]">
-      <aside className="bg-[#0d3822] text-[#e8f3ec] px-4 py-5 md:sticky md:top-0 md:h-screen md:overflow-y-auto flex flex-col gap-3">
+      <aside
+        className="text-[#e8f3ec] px-4 py-5 md:sticky md:top-0 md:h-screen md:overflow-y-auto flex flex-col gap-3 md:rounded-r-[28px]"
+        style={{ background: 'linear-gradient(180deg, #0d4637 0%, #0a3a2d 100%)' }}
+      >
         <div className="flex items-center gap-3 px-1">
-          <span className="w-10 h-10 rounded-xl bg-[#f0b429] text-[#0d3822] grid place-items-center font-display font-extrabold">VM</span>
+          <span className="w-11 h-11 rounded-2xl bg-white grid place-items-center shrink-0">
+            <LeafLogo className="w-7 h-7" />
+          </span>
           <strong className="font-display leading-tight">Vegetable Mandi Agent</strong>
         </div>
 
         <NavLinks groups={navGroups} />
 
-        <div className="mt-auto flex items-center gap-3 bg-white/10 rounded-xl p-3">
-          <span className="w-9 h-9 rounded-full bg-[#f0b429] text-[#0d3822] grid place-items-center font-bold text-sm shrink-0">
+        <div className="mt-auto flex items-center gap-3 bg-white/10 rounded-2xl p-3">
+          <span className="w-9 h-9 rounded-full bg-[#ff5e31] text-white grid place-items-center font-bold text-sm shrink-0">
             {initials}
           </span>
           <div className="min-w-0 flex-1">
@@ -85,8 +91,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </aside>
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-10 flex items-center justify-between bg-[#f1f4f0]/95 backdrop-blur border-b border-[#dce3dc] px-6 py-3">
-          <p className="text-sm text-[#5d6f64]">
+        <header className="sticky top-0 z-10 flex items-center justify-between bg-[#eff3f1]/90 backdrop-blur px-6 py-4">
+          <p className="text-sm text-[#5b6f68]">
             {new Date().toLocaleDateString('en-IN', {
               weekday: 'long',
               day: 'numeric',
@@ -94,7 +100,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               year: 'numeric',
             })}
           </p>
-          <span className="bg-[#e3f1e8] text-[#197a45] font-semibold text-sm px-3 py-1 rounded-full">
+          <span className="bg-white text-[#0e6b50] border border-[#dbe5e1] font-semibold text-sm px-4 py-1.5 rounded-full shadow-sm">
             {roleLabel[user.role]}
           </span>
         </header>
