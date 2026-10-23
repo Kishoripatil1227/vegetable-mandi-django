@@ -16,6 +16,13 @@ const vegEmoji = (name?: string | null) => {
   return map.find(([k]) => n.includes(k))?.[1] || '🥬'
 }
 
+const TONES = {
+  green: 'linear-gradient(135deg,#1f8a3d,#116b2c)',
+  blue: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+  amber: 'linear-gradient(135deg,#d99a1c,#b8770a)',
+  purple: 'linear-gradient(135deg,#8b3fe0,#6d28d9)',
+}
+
 type D = {
   lots_today: number; active_farmers: number; pending_count: number; pending_amount: number
   total_sales: number; total_commission: number; by_status: Record<string, number>
@@ -23,21 +30,55 @@ type D = {
 
 function Stat({ icon, label, value, sub, tone, href }: { icon: string; label: string; value: string | number; sub?: string; tone: string; href?: string }) {
   const card = (
-    <div className="bg-white rounded-2xl p-3 transition hover:-translate-y-1 hover:shadow-xl h-full">
-      <div className={`h-24 rounded-2xl grid place-items-center text-5xl ${tone}`}>{icon}</div>
-      <div className="flex items-end justify-between gap-2 px-2 pt-3 pb-1">
+    <div className="rounded-2xl p-5 text-white shadow-lg transition hover:-translate-y-1 hover:shadow-2xl h-full" style={{ background: tone }}>
+      <div className="flex items-center gap-4">
+        <span className="w-14 h-14 rounded-full bg-white/20 grid place-items-center text-2xl shrink-0">{icon}</span>
         <div className="min-w-0">
-          <p className="text-[11px] uppercase tracking-wider text-[#5b6f68] font-bold">{label}</p>
-          <p className="text-2xl font-extrabold text-[#12261f] truncate mt-1">{value}</p>
-          <p className="text-xs text-[#5b6f68] min-h-4">{sub}</p>
+          <p className="text-xs font-semibold text-white/80">{label}</p>
+          <p className="text-3xl font-extrabold truncate">{value}</p>
+          <p className="text-xs text-white/75 min-h-4">{sub}</p>
         </div>
-        {href && (
-          <span className="w-9 h-9 rounded-xl bg-[#0d4637] text-white grid place-items-center shrink-0">→</span>
-        )}
       </div>
     </div>
   )
   return href ? <Link href={href} className="block">{card}</Link> : card
+}
+
+function SalesChart({ daily }: { daily: Record<string, { sales: number }> }) {
+  const days = Object.keys(daily).sort()
+  if (days.length === 0) {
+    return <p className="text-sm text-[#5b6f68] py-12 text-center">No sales in the last 30 days.</p>
+  }
+  const vals = days.map((d) => Number(daily[d].sales) || 0)
+  const max = Math.max(1, ...vals)
+  const W = 600, H = 210, PX = 44, PY = 18
+  const x = (i: number) => (days.length === 1 ? W / 2 : PX + (i * (W - PX * 2)) / (days.length - 1))
+  const y = (v: number) => H - PY - (v / max) * (H - PY * 2)
+  const pts = vals.map((v, i) => `${x(i)},${y(v)}`).join(' ')
+  const short = (n: number) => (n >= 1000 ? `${Math.round(n / 100) / 10}k` : String(Math.round(n)))
+  return (
+    <svg viewBox={`0 0 ${W} ${H + 18}`} className="w-full h-auto" role="img" aria-label="Daily sales">
+      <defs>
+        <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3ecf5a" stopOpacity=".35" />
+          <stop offset="1" stopColor="#3ecf5a" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {[0, 0.5, 1].map((t) => (
+        <g key={t}>
+          <line x1={PX} x2={W - PX} y1={y(max * t)} y2={y(max * t)} stroke="#ffffff" strokeOpacity=".08" />
+          <text x={PX - 8} y={y(max * t) + 4} textAnchor="end" fontSize="11" fill="#9fc4ac">{short(max * t)}</text>
+        </g>
+      ))}
+      <polygon points={`${x(0)},${H - PY} ${pts} ${x(days.length - 1)},${H - PY}`} fill="url(#salesFill)" />
+      <polyline points={pts} fill="none" stroke="#3ecf5a" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
+      {vals.map((v, i) => (
+        <circle key={i} cx={x(i)} cy={y(v)} r="4" fill="#06210f" stroke="#3ecf5a" strokeWidth="2.5" />
+      ))}
+      <text x={PX} y={H + 14} fontSize="11" fill="#9fc4ac">{days[0].slice(5)}</text>
+      <text x={W - PX} y={H + 14} fontSize="11" fill="#9fc4ac" textAnchor="end">{days[days.length - 1].slice(5)}</text>
+    </svg>
+  )
 }
 
 function Banner({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
@@ -118,10 +159,10 @@ function CustomerView() {
       ) : (
         <>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Stat icon="🧾" label="Purchases" value={r.summary.purchases} tone="bg-[#e1f0ea]" />
-            <Stat icon="⚖️" label="Total quantity" value={`${totalKg.toFixed(1)} kg`} tone="bg-[#e4eefc]" />
-            <Stat icon="💰" label="Total amount" value={inr(spent)} tone="bg-[#ffece5]" />
-            <Stat icon="📈" label="Average rate" value={`${inr(avg)}/kg`} tone="bg-[#efe8fb]" />
+            <Stat icon="🧾" label="Purchases" value={r.summary.purchases} tone={TONES.green} />
+            <Stat icon="⚖️" label="Total quantity" value={`${totalKg.toFixed(1)} kg`} tone={TONES.blue} />
+            <Stat icon="💰" label="Total amount" value={inr(spent)} tone={TONES.amber} />
+            <Stat icon="📈" label="Average rate" value={`${inr(avg)}/kg`} tone={TONES.purple} />
           </div>
 
           <div className="grid lg:grid-cols-3 gap-4">
@@ -194,12 +235,17 @@ export default function Dashboard() {
   const [denied, setDenied] = useState(false)
   const [me, setMe] = useState<any>(null)
   const [recent, setRecent] = useState<any[]>([])
+  const [rep, setRep] = useState<any>(null)
 
   useEffect(() => {
     fetch('/api/auth/me').then((x) => x.json()).then(setMe)
     fetch('/api/lots?page=1')
       .then((x) => (x.ok ? x.json() : null))
       .then((j) => j && setRecent((j.data || []).slice(0, 5)))
+      .catch(() => {})
+    fetch('/api/reports')
+      .then((x) => (x.ok ? x.json() : null))
+      .then((j) => j && setRep(j))
       .catch(() => {})
     fetch('/api/dashboard').then(async (r) => {
       if (r.ok) setD(await r.json())
@@ -211,6 +257,9 @@ export default function Dashboard() {
   if (!d) return <p className="text-[#5b6f68]">Loading...</p>
 
   const totalLots = Object.values(d.by_status).reduce((a, b) => a + b, 0)
+  const topVeg = Object.entries((rep?.by_vegetable || {}) as Record<string, number>)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
 
   return (
     <div className="space-y-6">
@@ -234,10 +283,36 @@ export default function Dashboard() {
       </Banner>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Stat icon="📦" label="Today's lots" value={d.lots_today} tone="bg-[#e1f0ea]" href="/lots" />
-        <Stat icon="🧑‍🌾" label="Active farmers" value={d.active_farmers} tone="bg-[#e4eefc]" href="/farmers" />
-        <Stat icon="⏳" label="Pending payments" value={inr(d.pending_amount)} sub={`${d.pending_count} settlements`} tone="bg-[#ffece5]" href="/settlements" />
-        <Stat icon="💰" label="Total sales" value={inr(d.total_sales)} sub={`Commission ${inr(d.total_commission)}`} tone="bg-[#efe8fb]" href="/reports" />
+        <Stat icon="📦" label="Today's lots" value={d.lots_today} tone={TONES.green} href="/lots" />
+        <Stat icon="🧑‍🌾" label="Active farmers" value={d.active_farmers} tone={TONES.blue} href="/farmers" />
+        <Stat icon="⏳" label="Pending payments" value={inr(d.pending_amount)} sub={`${d.pending_count} settlements`} tone={TONES.amber} href="/settlements" />
+        <Stat icon="💰" label="Total sales" value={inr(d.total_sales)} sub={`Commission ${inr(d.total_commission)}`} tone={TONES.purple} href="/reports" />
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4">
+        <div className="bg-white rounded-2xl p-5 lg:col-span-2">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg">Daily sales</h2>
+            <span className="text-xs text-[#5b6f68]">Last 30 days</span>
+          </div>
+          <SalesChart daily={rep?.daily || {}} />
+        </div>
+        <div className="bg-white rounded-2xl p-5">
+          <h2 className="text-lg mb-3">Top vegetables</h2>
+          {topVeg.length === 0 ? (
+            <p className="text-sm text-[#5b6f68] py-6 text-center">No sales yet.</p>
+          ) : (
+            <ul className="space-y-3">
+              {topVeg.map(([name, amt]) => (
+                <li key={name} className="flex items-center gap-3">
+                  <span className="w-10 h-10 rounded-full bg-[#e1f0ea] grid place-items-center text-xl shrink-0">{vegEmoji(name)}</span>
+                  <span className="font-semibold flex-1 truncate">{name}</span>
+                  <span className="text-sm font-bold">{inr(Number(amt))}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl p-5">

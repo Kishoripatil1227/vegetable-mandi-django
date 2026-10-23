@@ -65,21 +65,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen md:grid md:grid-cols-[248px_1fr]">
-      <aside
-        className="text-[#e8f3ec] px-4 py-5 md:sticky md:top-0 md:h-screen md:overflow-y-auto flex flex-col gap-3 md:rounded-r-[28px]"
-        style={{ background: 'linear-gradient(180deg, #0d4637 0%, #0a3a2d 100%)' }}
-      >
+      <aside className="bg-[#04180f] border-r border-[#0f4a2e] text-[#e8f3ec] px-4 py-5 md:sticky md:top-0 md:h-screen md:overflow-y-auto flex flex-col gap-3">
         <div className="flex items-center gap-3 px-1">
-          <span className="w-11 h-11 rounded-2xl bg-white grid place-items-center shrink-0">
-            <LeafLogo className="w-7 h-7" />
-          </span>
+          <LeafLogo className="w-10 h-10 shrink-0" />
           <strong className="font-display leading-tight">Vegetable Mandi Agent</strong>
         </div>
 
         <NavLinks groups={navGroups} />
 
-        <div className="mt-auto flex items-center gap-3 bg-white/10 rounded-2xl p-3">
-          <span className="w-9 h-9 rounded-full bg-[#ff5e31] text-white grid place-items-center font-bold text-sm shrink-0">
+        <div className="mt-auto flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3">
+          <span className="w-9 h-9 rounded-full bg-[#1fa34a] text-white grid place-items-center font-bold text-sm shrink-0">
             {initials}
           </span>
           <div className="min-w-0 flex-1">
@@ -91,8 +86,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </aside>
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-10 flex items-center justify-between bg-[#eff3f1]/90 backdrop-blur px-6 py-4">
-          <p className="text-sm text-[#5b6f68]">
+        <header className="sticky top-0 z-10 flex items-center justify-between bg-[#031a10]/90 backdrop-blur border-b border-[#0f4a2e] px-6 py-4">
+          <p className="text-sm text-[#a9c9b5]">
             {new Date().toLocaleDateString('en-IN', {
               weekday: 'long',
               day: 'numeric',
@@ -100,7 +95,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               year: 'numeric',
             })}
           </p>
-          <span className="bg-white text-[#0e6b50] border border-[#dbe5e1] font-semibold text-sm px-4 py-1.5 rounded-full shadow-sm">
+          <span className="bg-[#1fa34a]/15 text-[#7be37a] border border-[#1fa34a]/40 font-semibold text-sm px-4 py-1.5 rounded-full">
             {roleLabel[user.role]}
           </span>
         </header>
