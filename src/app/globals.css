@@ -1,20 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* Dark green theme (colours from the design: deep forest green, bright leaf green, gold, blue, purple) */
 :root {
-  color-scheme: light;
-  --p: #0e6b50;
-  --p-dark: #0a5340;
-  --p2: #e1f0ea;
-  --bg: #eff3f1;
-  --tx: #12261f;
-  --mu: #5b6f68;
-  --bd: #dbe5e1;
-  --deep: #0d4637;
+  color-scheme: dark;
+  --p: #2fc44f;
+  --p-dark: #27ab44;
+  --p2: rgba(47, 196, 79, .14);
+  --bg: #031a10;
+  --surface: #062a1b;
+  --surface-2: #0b3320;
+  --tx: #e3f2e8;
+  --mu: #a9c9b5;
+  --bd: #0f4a2e;
+  --deep: #ffffff;
   --gold: #ff5e31;
   --leaf: #51cc50;
   --leaf-dark: #2aa648;
-  --danger: #b3261e;
+  --danger: #ff9d8a;
 }
 
 body {
@@ -31,7 +34,7 @@ h1, h2, h3, h4, .font-display {
   letter-spacing: -0.02em;
 }
 
-/* Page title: har page cha pahila heading */
+/* Page title: first heading on every page */
 main h1 {
   font-size: 1.75rem;
   font-weight: 800;
@@ -45,45 +48,71 @@ main h1::after {
   left: 0; bottom: 0;
   width: 48px; height: 4px;
   border-radius: 4px;
-  background: var(--gold);
+  background: var(--p);
 }
 main h2 { font-weight: 700; color: var(--deep); }
 
-/* Cards */
+/* Cards (older pages still use bg-white, so they turn into dark surfaces here) */
+main .bg-white,
+.bg-white.rounded,
+.bg-white.rounded-lg,
+.bg-white.rounded-xl,
+.bg-white.rounded-2xl {
+  background-color: var(--surface);
+  color: var(--tx);
+}
 .bg-white.rounded,
 .bg-white.rounded-lg,
 .bg-white.rounded-xl,
 .bg-white.rounded-2xl {
   border: 1px solid var(--bd);
   border-radius: 18px;
-  box-shadow: 0 1px 2px rgba(13, 70, 55, .04), 0 4px 14px rgba(13, 70, 55, .04);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
 }
+
+/* Colours that older pages hard-coded for a light theme */
+main .text-\[\#5b6f68\],
+main .text-gray-400,
+main .text-gray-500,
+main .text-gray-600 { color: var(--mu); }
+main .text-\[\#12261f\] { color: var(--tx); }
+main .text-\[\#0e6b50\],
+main .text-\[\#0a5340\] { color: #7be37a; }
+main .bg-\[\#e1f0ea\] { background-color: rgba(47, 196, 79, .15); }
+main .bg-\[\#eaf0ed\],
+main .bg-\[\#f4f8f6\],
+main .bg-gray-100 { background-color: var(--surface-2); }
+main .border-\[\#dbe5e1\],
+main .border-\[\#e3ece8\] { border-color: var(--bd); }
+main .divide-\[\#edf1ed\] > :not(:last-child) { border-color: var(--bd); }
+main .text-\[\#8aa097\] { color: #7fa68d; }
 
 /* Inputs */
 input, select, textarea {
   color: var(--tx);
-  background: #fff;
+  background: var(--surface-2);
   border: 1.5px solid var(--bd);
   border-radius: 10px;
   padding: .55rem .75rem;
   font-size: .95rem;
   transition: border-color .15s, box-shadow .15s;
 }
-input:hover, select:hover { border-color: #bccabf; }
+input:hover, select:hover { border-color: #1b6b43; }
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--p);
-  box-shadow: 0 0 0 4px rgba(14, 107, 80, .16);
+  box-shadow: 0 0 0 4px rgba(47, 196, 79, .18);
 }
-input::placeholder { color: #9aa9a0; }
-input:disabled, select:disabled { background: #f3f5f3; color: #7b8a81; cursor: not-allowed; }
+input::placeholder { color: #7fa68d; }
+input:disabled, select:disabled { background: #082417; color: #6f9380; cursor: not-allowed; }
 select {
   appearance: none;
   padding-right: 2.2rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%235d6f64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23a9c9b5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right .8rem center;
 }
+select option { background: var(--surface); color: var(--tx); }
 label { font-weight: 600; color: var(--mu); }
 
 /* Buttons */
@@ -95,25 +124,25 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   background-color: var(--p);
   border-radius: 10px;
   font-weight: 600;
-  box-shadow: 0 1px 2px rgba(13, 70, 55, .2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
 }
-.bg-green-700:hover:not(:disabled) { background-color: var(--p-dark); box-shadow: 0 4px 12px rgba(14, 107, 80, .3); }
+.bg-green-700:hover:not(:disabled) { background-color: var(--p-dark); box-shadow: 0 4px 12px rgba(47, 196, 79, .3); }
 
 /* Pagination / secondary buttons */
 button.border {
-  background: #fff;
+  background: var(--surface-2);
   border: 1.5px solid var(--bd);
   border-radius: 10px;
   font-weight: 600;
   color: var(--tx);
 }
-button.border:hover:not(:disabled) { border-color: var(--p); color: var(--p); }
+button.border:hover:not(:disabled) { border-color: var(--p); color: #7be37a; }
 
 /* Tables */
 table { border-collapse: separate; border-spacing: 0; width: 100%; }
 table thead th {
   background: var(--p2);
-  color: var(--p);
+  color: #7be37a;
   font-weight: 700;
   font-size: .72rem;
   text-transform: uppercase;
@@ -123,23 +152,23 @@ table thead th {
 }
 table thead th:first-child { border-top-left-radius: 10px; }
 table thead th:last-child { border-top-right-radius: 10px; }
-table tbody td { padding: .75rem; border-top: 1px solid #edf1ed; }
-table tbody tr:nth-child(even) { background: #fafcfa; }
-table tbody tr:hover { background: #eaf5f0; }
-table tbody tr.bg-green-50 { background: #eaf5f0; }
+table tbody td { padding: .75rem; border-top: 1px solid var(--bd); }
+table tbody tr:nth-child(even) { background: rgba(255, 255, 255, .02); }
+table tbody tr:hover { background: rgba(47, 196, 79, .08); }
+table tbody tr.bg-green-50 { background: rgba(47, 196, 79, .1); }
 
 /* Messages (green = success, red = error) */
 p.text-green-700 {
-  background: #e8f5ec; border: 1px solid #bfe0c9; color: #0a5340;
+  background: rgba(47, 196, 79, .12); border: 1px solid rgba(47, 196, 79, .4); color: #9af0a0;
   padding: .6rem .9rem; border-radius: 10px; font-weight: 500;
 }
 p.text-red-600 {
-  background: #fdecea; border: 1px solid #f5c2bd; color: var(--danger);
+  background: rgba(255, 94, 49, .12); border: 1px solid rgba(255, 94, 49, .4); color: var(--danger);
   padding: .6rem .9rem; border-radius: 10px; font-weight: 500;
 }
 
-:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-::selection { background: #cfe8d8; }
+:focus-visible { outline: 3px solid #51cc50; outline-offset: 2px; }
+::selection { background: #1b6b43; color: #fff; }
 
 @media (max-width: 768px) {
   main h1 { font-size: 1.4rem; }
@@ -149,7 +178,7 @@ p.text-red-600 {
 /* Script font for hero headlines */
 .font-script { font-family: 'Caveat', cursive; letter-spacing: 0; }
 
-/* Dark glass card on the login page (inputs need unlayered CSS to beat the global input rules) */
+/* Dark glass card on the login page */
 .auth-glass {
   background: rgba(5, 28, 17, .66);
   border: 1px solid rgba(81, 204, 80, .28);
