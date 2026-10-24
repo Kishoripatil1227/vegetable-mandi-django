@@ -38,7 +38,7 @@ export default function LoginPage() {
     setError('')
 
     const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), 20000)
+    const timer = setTimeout(() => ctrl.abort(), 90000)
 
     try {
       const r = await fetch('/api/auth/login', {
