@@ -1,122 +1,171 @@
-# 🥬 Vegetable Mandi Management
+# 🥬 Vegetable Mandi Management System
 
-Web app for a vegetable mandi: **Farmer -> Vegetable lot -> Weighment -> Auction / Price -> Commission -> Farmer settlement -> History / Reports.**
+A web application that digitizes the daily work of a vegetable mandi (wholesale market): receiving farmer produce, weighing it, auctioning it to buyers, calculating commission and settling payment with the farmer.
 
-- **Frontend:** React / Next.js (App Router) + Tailwind CSS, deployed on **Vercel**
-- **Backend:** **Python + Django** REST API (`backend/`), deployed on **Render**
-- **Database and login:** Supabase (PostgreSQL + Supabase Auth). The tables are the same ones the project already had, so existing data keeps working.
+**Workflow:** Farmer → Vegetable lot → Weighment → Auction / price → Commission → Farmer settlement → History and reports
+
+## Live links
+
+| What | Link |
+|---|---|
+| Live application (frontend, Vercel) | https://vegetable-mandi-django-biofk4582-kishoripatil1227.vercel.app |
+| Backend API health check (Render) | https://vegetable-mandi-django.vercel.app/api/health |
+| Source code | https://github.com/Kishoripatil1227/vegetable-mandi-django |
+
+> The backend runs on a free Render plan and sleeps after inactivity. The first request can take about a minute.
+
+## Features
+
+| Module | What it does |
+|---|---|
+| Authentication and roles | Login, signup, forgot / reset password, three roles |
+| Farmers and buyers | Add, search and view, link a customer login to a buyer |
+| Produce lots | Create lots with an automatic lot number, search, status filter |
+| Weighment | Gross and tare weight, net weight calculated and validated |
+| Auction and commission | Rate per kg and buyer, total and commission calculated |
+| Settlements | Net payable per lot, pending and paid status, admin finalizes |
+| Search and history | Find lots by number, status and dates with the full chain |
+| Reports and dashboard | Daily sales chart, top vegetables, lot pipeline, totals |
+| Settings and audit | Default commission, role management, audit log |
+
+## User roles
+
+| Role | Access |
+|---|---|
+| Admin / Owner | Everything, finalizes payments, manages users, roles and settings |
+| Staff / Operator | Daily entries (farmers, buyers, lots, weighments, auctions, settlements). Cannot finalize payments |
+| Customer | Sees only their own purchases and rates |
+
+Test accounts for the demo (create them from the Signup page and ask the admin to set the role):
+
+| Role | Email |
+|---|---|
+| Admin | admin@example.com |
+| Staff | staff@example.com |
+| Customer | customer@example.com |
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React, Next.js (App Router), TypeScript, Tailwind CSS |
+| Backend | Python, Django (REST API in JSON) |
+| Database and authentication | PostgreSQL and Auth on Supabase |
+| Hosting | Vercel (frontend), Render (backend) |
+| Version control | Git and GitHub (feature branch → develop → main) |
+
+## Architecture
 
 ```
-Browser  ->  Vercel (Next.js pages)  --/api/*-->  Render (Django API)  ->  Supabase (Postgres + Auth)
+Browser → Vercel (Next.js pages) → /api/* → Render (Django API) → Supabase (PostgreSQL + Auth)
 ```
 
-The React pages still call `/api/...`. `next.config.ts` forwards every `/api/*` request to Django, so the browser sees one origin and cookies work without CORS.
-
-## Modules (from the project brief)
-
-| # | Module | Where |
-|---|---|---|
-| 1 | Authentication and roles (admin, staff, customer) | `/login`, `/signup`, `/roles` |
-| 2 | Farmer / customer management | `/farmers`, `/buyers`, `/customer-links` |
-| 3 | Produce lot management | `/lots` |
-| 4 | Weighment | `/weighments` |
-| 5 | Auction / price | `/auctions` |
-| 6 | Commission | calculated in `/auctions`, default rate in `/settings` |
-| 7 | Settlement / farmer payment | `/settlements` |
-| 8 | Search and history | `/history` |
-| 9 | Reports and dashboard | `/reports`, `/dashboard` |
-| 10 | Status tracking | lot status badges, pipeline on the dashboard |
-| 11 | Settings and audit | `/settings`, audit log (admin) |
+The React pages call `/api/...`. Next.js forwards every `/api` request to the Django server, so the browser sees one site and the session cookie works without CORS.
 
 ## Folder structure
 
 ```
-src/                     React / Next.js frontend
-  app/(app)/             logged-in pages
-  components/            MasterPage, StatusBadge, NavLinks ...
-  lib/supabase/          client.ts (password reset), auth.ts (session check via Django)
+src/                     Next.js frontend (pages, components, theme)
+  app/(app)/             logged-in pages: dashboard, farmers, lots, ...
+  components/            shared components
 backend/                 Django API
   mandi/                 settings, urls, wsgi
-  api/                   views_*.py, db.py, http.py, supabase.py, utils.py, tests/
-  requirements.txt  render.yaml  .env.example
-docs/                    API.md, ER_DIAGRAM.md, TEST_CASES.md
+  api/                   views, SQL helpers, Supabase auth client, tests
+docs/                    API.md, ER_DIAGRAM.md, TEST_CASES.md, WORKLOAD.md
+public/images/           images used by the home and login pages
 ```
 
 ## Run locally
 
-You need Node 20+, Python 3.10+ and the Supabase project.
+Requirements: Node.js 20+, Python 3.10+, a Supabase project.
 
 **1. Backend**
 
 ```bash
 cd backend
 python -m venv .venv
-.venv\Scripts\activate          # Windows   (Mac/Linux: source .venv/bin/activate)
+.venv\Scripts\activate          # Mac / Linux: source .venv/bin/activate
 pip install -r requirements.txt
-copy .env.example .env          # then fill in the values (see below)
-python manage.py runserver      # http://127.0.0.1:8000/api/health
+copy .env.example .env          # Mac / Linux: cp .env.example .env
+python manage.py runserver      # http://127.0.0.1:8000/api/health?db=1
 ```
 
-Values for `backend/.env`:
+Fill `backend/.env`:
 
-| Variable | Where to find it |
+| Variable | Meaning |
 |---|---|
-| `DATABASE_URL` | Supabase -> Connect -> **Session pooler** connection string. Put your database password in place of `[YOUR-PASSWORD]` (reset it under Project Settings -> Database if you forgot it). |
-| `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Supabase -> Project Settings -> API |
-| `DJANGO_SECRET_KEY` | any long random string |
 | `DEBUG` | `1` locally, `0` in production |
-
-Check the database connection: open `http://127.0.0.1:8000/api/health?db=1`. It should show `{"ok": true, "db": true}`.
+| `DJANGO_SECRET_KEY` | long random string |
+| `ALLOWED_HOSTS` | allowed host names |
+| `DATABASE_URL` | Supabase Postgres connection string (Session pooler) |
+| `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Supabase project API settings |
 
 **2. Frontend** (second terminal, project root)
 
 ```bash
 npm install
-copy .env.local.example .env.local   # fill NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+copy .env.local.example .env.local   # Mac / Linux: cp .env.local.example .env.local
 npm run dev                          # http://localhost:3000
 ```
 
-`BACKEND_URL` in `.env.local` stays `http://127.0.0.1:8000` locally.
+Fill `.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `BACKEND_URL` (`http://127.0.0.1:8000` locally).
 
 **3. Tests**
 
 ```bash
 cd backend
-set DEBUG=1                          # Mac/Linux: export DEBUG=1
+set DEBUG=1                     # Mac / Linux: export DEBUG=1
 python manage.py test
 ```
 
-## Deploy
+Never commit `.env` or `.env.local`. Only the `.example` files are in the repository.
 
-**Backend on Render**
+## Deployment
 
-1. Push the repo to GitHub.
-2. Render -> New -> Blueprint (or Web Service), pick the repo. `backend/render.yaml` has the settings: root `backend`, build `pip install -r requirements.txt`, start `gunicorn mandi.wsgi:application`.
-3. Add the environment variables: `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (`DJANGO_SECRET_KEY` is generated).
-4. After the deploy, open `https://<your-service>.onrender.com/api/health?db=1`.
-
-**Frontend on Vercel**
-
-1. Import the same repo in Vercel (framework: Next.js, root directory: the repo root).
-2. Environment Variables (Production and Preview):
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `BACKEND_URL` = `https://<your-service>.onrender.com`
-3. Deploy. `SUPABASE_SERVICE_ROLE_KEY` is no longer needed on Vercel, remove it there.
-4. Supabase -> Authentication -> URL Configuration: add the Vercel URL to Site URL and Redirect URLs (needed for forgot / reset password).
-
-Note: Render's free plan sleeps after inactivity, the first request can take about a minute. Open `/api/health` once before a demo.
-
-## Git workflow
-
-```
-feature/<name> -> develop -> main
-```
-
-Commit style: `feat:`, `fix:`, `style:`, `docs:`. Every pull request gets a Vercel preview URL.
+1. **Backend on Render:** New → Blueprint (or Web Service), root directory `backend`, build `pip install -r requirements.txt`, start `gunicorn mandi.wsgi:application`. Add the backend environment variables.
+2. **Frontend on Vercel:** import the repository, framework Next.js, add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `BACKEND_URL` (the Render URL, no trailing slash). Redeploy after changing a variable.
+3. **Supabase:** Authentication → URL Configuration → add the Vercel URL to Site URL and Redirect URLs.
+4. Every push to `main` deploys automatically. Every pull request gets a Vercel preview URL.
 
 ## Documentation
 
-- [`docs/API.md`](docs/API.md) - all endpoints, roles, request and response shapes
-- [`docs/ER_DIAGRAM.md`](docs/ER_DIAGRAM.md) - database tables and relations
-- [`docs/TEST_CASES.md`](docs/TEST_CASES.md) - manual test cases for the final demo
+| File | Content |
+|---|---|
+| [docs/API.md](docs/API.md) | All endpoints, roles, request and response examples |
+| [docs/ER_DIAGRAM.md](docs/ER_DIAGRAM.md) | Database tables and relations |
+| [docs/TEST_CASES.md](docs/TEST_CASES.md) | Manual test cases for the live system |
+| [docs/WORKLOAD.md](docs/WORKLOAD.md) | Task plan and workload |
+
+## Concepts used in this project
+
+| Concept | Where it is used |
+|---|---|
+| REST API design | About 25 JSON endpoints in Django |
+| Authentication and role-based access | Supabase Auth, session cookie, admin / staff / customer checks |
+| Relational database design | 12 PostgreSQL tables with primary and foreign keys |
+| Transactions | Weighment, auction and settlement update several tables together |
+| Validation | Phone, weight, rate, commission and status rules in the backend |
+| Responsive UI | Tailwind CSS, works on mobile and desktop |
+| Testing | Automated Django tests and manual test cases |
+| Git workflow | Feature branches, pull requests, develop and main |
+| Deployment | Vercel, Render and Supabase |
+
+## Project history
+
+The project was built in phases, and the commit history of both repositories shows it:
+
+1. **Phase 1:** React / Next.js application with a Next.js API and Supabase, in the earlier repository https://github.com/Kishoripatil1227/vegetable-mandi-management (authentication, farmers, lots, auctions, settlements, reports, UI polish).
+2. **Phase 2:** Backend moved to Python Django with the same API paths, Supabase kept as the database.
+3. **Phase 3:** New dark green design for the home page, login, sidebar and dashboard, then page-by-page UI updates.
+
+## Future enhancements
+
+- SMS or WhatsApp notification to farmers when a payment is marked paid
+- PDF export of settlement statements and reports
+- Multiple mandi / branch support
+- Daily market rate import
+- Hindi and Marathi language support
+
+## Author
+
+[kishori patil] · [zoyasoft technologies] · [August 2026]
