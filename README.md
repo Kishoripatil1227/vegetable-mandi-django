@@ -8,7 +8,7 @@ A web application that digitizes the daily work of a vegetable mandi (wholesale 
 
 | What | Link |
 |---|---|
-| Live application (frontend, Vercel) | https://vegetable-mandi-django-biofk4582-kishoripatil1227.vercel.app |
+| Live application (frontend, Vercel) | https://vegetable-mandi-django.vercel.app/ |
 | Backend API health check (Render) | https://vegetable-mandi-django.vercel.app/api/health |
 | Source code | https://github.com/Kishoripatil1227/vegetable-mandi-django |
 
