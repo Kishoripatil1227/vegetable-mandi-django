@@ -207,3 +207,4 @@ p.text-red-600 {
 }
 .auth-glass .pad-l { padding-left: 2.75rem; }
 .auth-glass .pad-r { padding-right: 2.75rem; }
+html { scroll-behavior: smooth; }
