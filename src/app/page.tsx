@@ -1,6 +1,15 @@
 import Link from 'next/link'
 import PhotoTile from '@/components/PhotoTile'
+import SectionNav from '@/components/SectionNav'
 import { LeafLogo } from '@/components/AuthShell'
+
+// Change these to the real contact details of your mandi.
+const CONTACT = {
+  place: 'Vegetable Mandi, [belgaum], [karnataka]',
+  phone: '+91 9686102628',
+  email: 'kishoripatil1210@gmail.com',
+  hours: 'Monday to Saturday, 5:00 am to 2:00 pm',
+}
 
 // First photo that exists wins; the SVG illustration is the final fallback.
 const HERO_BG =
@@ -9,31 +18,21 @@ const HERO_BG =
 const svg = { width: 34, height: 34, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
 const perks = [
-  {
-    t: 'Fresh & Natural',
-    d: '100% fresh vegetables direct from farms',
-    icon: <LeafLogo className="w-9 h-9" />,
-  },
+  { t: 'Fresh & Natural', d: '100% fresh vegetables direct from farms', icon: <LeafLogo className="w-9 h-9" /> },
   {
     t: 'Fair Price',
     d: 'Best prices for both farmers and buyers',
-    icon: (
-      <svg {...svg} aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" /><path d="M9 12l2 2 4-4" /></svg>
-    ),
+    icon: <svg {...svg} aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" /><path d="M9 12l2 2 4-4" /></svg>,
   },
   {
     t: 'Fast Delivery',
     d: 'From mandi to your home',
-    icon: (
-      <svg {...svg} aria-hidden="true"><path d="M3 6h11v10H3z" /><path d="M14 10h4l3 3v3h-7" /><circle cx="7" cy="17.5" r="1.8" /><circle cx="17" cy="17.5" r="1.8" /></svg>
-    ),
+    icon: <svg {...svg} aria-hidden="true"><path d="M3 6h11v10H3z" /><path d="M14 10h4l3 3v3h-7" /><circle cx="7" cy="17.5" r="1.8" /><circle cx="17" cy="17.5" r="1.8" /></svg>,
   },
   {
     t: 'Support Farmers',
     d: 'Empowering local farmers and communities',
-    icon: (
-      <svg {...svg} aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6" /><path d="M8 5.5h8" /></svg>
-    ),
+    icon: <svg {...svg} aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6" /><path d="M8 5.5h8" /></svg>,
   },
 ]
 
@@ -68,13 +67,18 @@ const gallery = [
   { n: 'Corn', e: '🌽', img: '/images/veg-corn.jpg' },
 ]
 
-const nav = [
-  ['Home', '#top'],
-  ['About', '#about'],
-  ['Vegetables', '#vegetables'],
-  ['For Farmers', '#farmers'],
-  ['For Buyers', '#buyers'],
-  ['Contact', '#contact'],
+const farmerPoints = [
+  { e: '🧾', t: 'Every delivery gets a lot number', d: 'The mandi staff register you once. After that each load you bring is saved with its own lot number, date and quantity.' },
+  { e: '⚖️', t: 'Honest weight', d: 'Gross weight, tare weight and net weight are written in the system, so the weight you are paid for is always on record.' },
+  { e: '💰', t: 'Clear price and commission', d: 'The auction rate, the total amount and the commission that is deducted are shown for every lot.' },
+  { e: '📅', t: 'Payment you can track', d: 'Each settlement is Pending or Paid, with the date of payment, and only the admin can mark it paid.' },
+]
+
+const buyerPoints = [
+  { e: '🔐', t: 'Your own login', d: 'Register as a customer. The mandi admin links your login to your buyer profile.' },
+  { e: '🛒', t: 'Your purchase history', d: 'See every lot you bought: vegetable, net kg, rate, amount and date.' },
+  { e: '📈', t: 'Rates at a glance', d: 'Your dashboard shows total quantity, total amount and your average rate per kg.' },
+  { e: '🥕', t: 'Spend by vegetable', d: 'Find out which vegetables you spend the most on.' },
 ]
 
 export default function Home() {
@@ -91,22 +95,9 @@ export default function Home() {
             </span>
           </a>
 
-          <nav className="hidden lg:flex gap-8 text-sm text-[#d3e8da]">
-            {nav.map(([label, href], i) => (
-              <a
-                key={label}
-                href={href}
-                className={`py-1 hover:text-white border-b-2 ${i === 0 ? 'border-[#51cc50] text-white' : 'border-transparent'}`}
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
+          <SectionNav />
 
           <div className="flex items-center gap-3">
-            <a href="#vegetables" aria-label="Browse vegetables" className="hidden sm:grid w-10 h-10 place-items-center rounded-full hover:bg-white/10">
-              <svg {...svg} width={20} height={20} aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4 4" /></svg>
-            </a>
             <Link href="/login" className="border border-white/70 hover:bg-white/10 px-5 py-2 rounded-xl text-sm font-semibold transition">
               Login
             </Link>
@@ -115,12 +106,13 @@ export default function Home() {
             </Link>
           </div>
         </div>
+        <SectionNav mobile />
       </header>
 
-      {/* ---------- hero ---------- */}
+      {/* ---------- hero (Home) ---------- */}
       <section
         id="top"
-        className="relative"
+        className="relative scroll-mt-24"
         style={{ backgroundImage: HERO_BG, backgroundSize: 'cover', backgroundPosition: 'center right' }}
       >
         <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 min-h-[520px] flex flex-col justify-center">
@@ -154,9 +146,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {perks.map((p) => (
             <div key={p.t} className="flex items-center gap-4">
-              <span className="w-16 h-16 rounded-full border-2 border-[#2fc44f]/70 text-[#51cc50] grid place-items-center shrink-0">
-                {p.icon}
-              </span>
+              <span className="w-16 h-16 rounded-full border-2 border-[#2fc44f]/70 text-[#51cc50] grid place-items-center shrink-0">{p.icon}</span>
               <div>
                 <h3 className="font-display font-bold">{p.t}</h3>
                 <p className="text-sm text-[#a9c9b5]">{p.d}</p>
@@ -166,10 +156,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- about / features ---------- */}
-      <section id="about" className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="font-display text-3xl md:text-4xl font-extrabold">Everything a mandi agent needs</h2>
-        <p className="mt-2 text-[#a9c9b5]">One searchable system with a clear record of every change.</p>
+      {/* ---------- About ---------- */}
+      <section id="about" className="max-w-7xl mx-auto px-6 py-20 scroll-mt-24">
+        <p className="text-sm font-semibold tracking-widest uppercase text-[#51cc50]">About</p>
+        <h2 className="font-display text-3xl md:text-4xl font-extrabold mt-2">Everything a mandi agent needs</h2>
+        <p className="mt-3 text-[#a9c9b5] max-w-3xl">
+          Vegetable Mandi replaces paper registers with one digital system: from the moment a farmer brings a load to the day the farmer is paid,
+          every step is recorded, calculated and searchable.
+        </p>
         <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f) => (
             <div key={f.t} className="rounded-3xl bg-[#062a1b] border border-[#0f4a2e] p-6 hover:border-[#2fc44f]/60 hover:-translate-y-1 transition">
@@ -179,12 +173,24 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        <h3 className="font-display text-2xl font-extrabold mt-16">Built for three kinds of users</h3>
+        <div className="mt-6 grid md:grid-cols-3 gap-5">
+          {roles.map(([e, t, d]) => (
+            <div key={t} className="rounded-3xl bg-[#062a1b] border border-[#0f4a2e] p-6 hover:border-[#2fc44f]/60 transition">
+              <span className="w-14 h-14 rounded-2xl bg-[#2fc44f]/15 grid place-items-center text-3xl">{e}</span>
+              <span className="inline-block mt-4 bg-[#2fc44f]/15 text-[#7be37a] text-sm font-semibold px-3 py-1 rounded-full">{t}</span>
+              <p className="text-sm text-[#a9c9b5] mt-3">{d}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* ---------- vegetables ---------- */}
-      <section id="vegetables" className="bg-[#04281a] border-y border-[#0f4a2e]">
+      {/* ---------- Vegetables ---------- */}
+      <section id="vegetables" className="bg-[#04281a] border-y border-[#0f4a2e] scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6 py-20">
-          <div className="flex items-end justify-between flex-wrap gap-2">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#51cc50]">Vegetables</p>
+          <div className="flex items-end justify-between flex-wrap gap-2 mt-2">
             <h2 className="font-display text-3xl md:text-4xl font-extrabold">Fresh from the farm, straight to the mandi</h2>
             <p className="text-[#a9c9b5]">Fresh produce, fair price, better tomorrow.</p>
           </div>
@@ -205,11 +211,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- for farmers: workflow ---------- */}
-      <section id="farmers" className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="font-display text-3xl md:text-4xl font-extrabold">The workflow</h2>
-        <p className="mt-2 text-[#a9c9b5]">For farmers: from the gate to the payment, every step is recorded.</p>
-        <div className="relative mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-10 gap-x-4">
+      {/* ---------- For Farmers ---------- */}
+      <section id="farmers" className="max-w-7xl mx-auto px-6 py-20 scroll-mt-24">
+        <p className="text-sm font-semibold tracking-widest uppercase text-[#51cc50]">For Farmers</p>
+        <h2 className="font-display text-3xl md:text-4xl font-extrabold mt-2">Fair weight, clear price, payment you can track</h2>
+        <p className="mt-3 text-[#a9c9b5] max-w-3xl">
+          Farmers do not need to log in. The mandi staff register you and record your produce, and you can ask for your lot and payment details at any time.
+        </p>
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {farmerPoints.map((f) => (
+            <div key={f.t} className="rounded-3xl bg-[#062a1b] border border-[#0f4a2e] p-6 hover:border-[#2fc44f]/60 transition">
+              <span className="w-14 h-14 rounded-2xl bg-[#2fc44f]/15 grid place-items-center text-3xl">{f.e}</span>
+              <h3 className="font-display text-lg font-bold mt-4">{f.t}</h3>
+              <p className="text-sm text-[#a9c9b5] mt-1.5">{f.d}</p>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="font-display text-2xl font-extrabold mt-16">How your produce moves</h3>
+        <div className="relative mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-10 gap-x-4">
           <span aria-hidden className="hidden md:block absolute top-8 left-[10%] right-[10%] h-0.5 bg-[#0f4a2e]" />
           {steps.map(([n, t, e]) => (
             <div key={n} className="relative flex flex-col items-center text-center">
@@ -221,38 +241,74 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <a href="#contact" className="inline-block mt-10 border border-white/70 hover:bg-white/10 px-7 py-3 rounded-xl font-semibold transition">
+          Talk to the mandi
+        </a>
       </section>
 
-      {/* ---------- for buyers: roles ---------- */}
-      <section id="buyers" className="bg-[#04281a] border-y border-[#0f4a2e]">
+      {/* ---------- For Buyers ---------- */}
+      <section id="buyers" className="bg-[#04281a] border-y border-[#0f4a2e] scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6 py-20">
-          <h2 className="font-display text-3xl md:text-4xl font-extrabold">Built for three kinds of users</h2>
-          <p className="mt-2 text-[#a9c9b5]">For buyers: customers see their own purchases and rates.</p>
-          <div className="mt-10 grid md:grid-cols-3 gap-5">
-            {roles.map(([e, t, d]) => (
-              <div key={t} className="rounded-3xl bg-[#062a1b] border border-[#0f4a2e] p-6 hover:border-[#2fc44f]/60 transition">
-                <span className="w-14 h-14 rounded-2xl bg-[#2fc44f]/15 grid place-items-center text-3xl">{e}</span>
-                <span className="inline-block mt-4 bg-[#2fc44f]/15 text-[#7be37a] text-sm font-semibold px-3 py-1 rounded-full">{t}</span>
-                <p className="text-sm text-[#a9c9b5] mt-3">{d}</p>
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#51cc50]">For Buyers</p>
+          <h2 className="font-display text-3xl md:text-4xl font-extrabold mt-2">See what you bought and what you paid</h2>
+          <p className="mt-3 text-[#a9c9b5] max-w-3xl">
+            Buyers get a customer login. Once the admin links it to your buyer profile, your purchases and rates appear on your own dashboard.
+          </p>
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {buyerPoints.map((f) => (
+              <div key={f.t} className="rounded-3xl bg-[#062a1b] border border-[#0f4a2e] p-6 hover:border-[#2fc44f]/60 transition">
+                <span className="w-14 h-14 rounded-2xl bg-[#2fc44f]/15 grid place-items-center text-3xl">{f.e}</span>
+                <h3 className="font-display text-lg font-bold mt-4">{f.t}</h3>
+                <p className="text-sm text-[#a9c9b5] mt-1.5">{f.d}</p>
               </div>
             ))}
+          </div>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link href="/signup" className="bg-[#2fc44f] hover:bg-[#27ab44] text-white px-7 py-3 rounded-xl font-bold shadow-lg shadow-black/30 transition">
+              Register as a buyer
+            </Link>
+            <Link href="/login" className="border border-white/70 hover:bg-white/10 px-7 py-3 rounded-xl font-semibold transition">
+              Customer login
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ---------- contact / call to action ---------- */}
-      <section id="contact" className="max-w-7xl mx-auto px-6 py-20">
+      {/* ---------- Contact ---------- */}
+      <section id="contact" className="max-w-7xl mx-auto px-6 py-20 scroll-mt-24">
+        <p className="text-sm font-semibold tracking-widest uppercase text-[#51cc50]">Contact</p>
+        <h2 className="font-display text-3xl md:text-4xl font-extrabold mt-2">Talk to the mandi</h2>
+        <p className="mt-3 text-[#a9c9b5] max-w-3xl">
+          Questions about registering a farmer or a buyer, a lot or a payment? Reach the mandi office.
+        </p>
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {[
+            ['📍', 'Address', CONTACT.place],
+            ['📞', 'Phone', CONTACT.phone],
+            ['✉️', 'Email', CONTACT.email],
+            ['🕒', 'Office hours', CONTACT.hours],
+          ].map(([e, t, d]) => (
+            <div key={t} className="rounded-3xl bg-[#062a1b] border border-[#0f4a2e] p-6">
+              <span className="w-12 h-12 rounded-2xl bg-[#2fc44f]/15 grid place-items-center text-2xl">{e}</span>
+              <h3 className="font-display font-bold mt-4">{t}</h3>
+              <p className="text-sm text-[#a9c9b5] mt-1 break-words">{d}</p>
+            </div>
+          ))}
+        </div>
+
         <div
-          className="relative overflow-hidden rounded-3xl p-10 md:p-14 text-center border border-[#0f4a2e]"
+          className="relative overflow-hidden rounded-3xl p-10 md:p-12 mt-10 text-center border border-[#0f4a2e]"
           style={{ background: 'linear-gradient(135deg, #062a1b 0%, #0a4a2c 100%)' }}
         >
           <span aria-hidden className="absolute -left-10 -top-10 w-48 h-48 rounded-full bg-white/5" />
           <span aria-hidden className="absolute -right-12 -bottom-16 w-64 h-64 rounded-full bg-[#51cc50]/15" />
           <div className="relative">
             <div aria-hidden className="flex justify-center gap-2 text-3xl mb-4">🍅 🥕 🧅 🥬 🌽</div>
-            <h2 className="font-display text-3xl md:text-4xl font-extrabold">Ready to run your mandi from one place?</h2>
-            <p className="mt-2 text-[#a9c9b5]">Questions about the system? Contact your mandi administrator.</p>
+            <h3 className="font-display text-2xl md:text-3xl font-extrabold">Ready to run your mandi from one place?</h3>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <a href={`mailto:${CONTACT.email}`} className="border border-white/70 hover:bg-white/10 px-8 py-3 rounded-xl font-semibold transition">
+                Send an email
+              </a>
               <Link href="/login" className="border border-white/70 hover:bg-white/10 px-8 py-3 rounded-xl font-semibold transition">
                 Login
               </Link>
